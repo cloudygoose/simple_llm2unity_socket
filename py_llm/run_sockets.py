@@ -7,7 +7,7 @@ import numpy as np
 import os
 
 import logging
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s: %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s: %(message)s')
 logger = logging.getLogger()
 
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
@@ -27,17 +27,17 @@ locks = MyStruct(llm_local = threading.Lock(), llm_openai = threading.Lock(), me
 
 def thread_llm_gen(g, mes_in):
     midx = mes_in.idx
-    logger.info('thread start idx: %s mes_in: %s', midx, str(mes_in.input_s))
+    logger.info('thread start idx: %s llm_name: %s mes_in: %s', midx, mes_in.llm_name, str(mes_in.input_s))
 
     if mes_in.llm_name == 'flan_t5':
-        llm_input = "You are a helpful assistant in a farm. Please give a interesting response to the following user utterance: " \
+        llm_input = "Please give an interesting response to the following user utterance: " \
             + mes_in.input_s + " Your response:";
         inputs = g.tokenizer(llm_input, return_tensors="pt")
         inputs = inputs.to(g.device)
 
         g.locks.llm_local.acquire()
         with MyTimer('generation_timer', do_print = True):
-            outputs = model.generate(**inputs, max_length = 100, min_length = 30)
+            outputs = model.generate(**inputs, max_length = 100, min_length = 5)
             out_s = tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
         g.locks.llm_local.release()
 

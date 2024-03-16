@@ -32,6 +32,8 @@ public class MessageManager : SingletonMonobehaviour<MessageManager>
         npc_d = new Dictionary<string, NPCDialogue>();
         npc_list.Add("NPC_Butch"); //llm_list.Add("gpt3.5-turbo");
         npc_d.Add("NPC_Butch", GameObject.Find("NPC_Butch").GetComponent<NPCDialogue>());
+        npc_list.Add("NPC_Butch2"); //llm_list.Add("gpt3.5-turbo");
+        npc_d.Add("NPC_Butch2", GameObject.Find("NPC_Butch2").GetComponent<NPCDialogue>());
 
         //First ask the python server to clear its memory
         string mes_r = SendAndReceive("-1 CLEAR placeholder placeholder placeholder placeholder placeholder");
